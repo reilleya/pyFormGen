@@ -10,11 +10,6 @@ unitLabels = {
     'Pa': 'Pressure',
     'kg': 'Mass',
     'kg/m^3': 'Density',
-    'kg/s': 'Mass Flow',
-    'kg/(m^2*s)': 'Mass Flux',
-    'm/(s*Pa^n)': 'Burn Rate Coefficient',
-    '(m*Pa)/s': 'Nozzle Slag Coefficient',
-    'm/(s*Pa)': 'Nozzle Erosion Coefficient'
 }
 
 unitTable = [
@@ -40,20 +35,7 @@ unitTable = [
     ('kg', 'oz', 2.205 * 16),
 
     ('kg/m^3', 'lb/in^3', 3.61273e-5),
-    ('kg/m^3', 'g/cm^3', 0.001),
-
-    ('kg/s', 'lb/s', 2.205),
-    ('kg/s', 'g/s', 1000),
-
-    ('kg/(m^2*s)', 'lb/(in^2*s)', 0.001422),
-
-    ('(m*Pa)/s', '(m*MPa)/s', 1000000),
-    ('(m*Pa)/s', '(in*psi)/s', 0.00571014715),
-
-    ('m/(s*Pa)', 'm/(s*MPa)', 1/1000000),
-    ('m/(s*Pa)', 'thou/(s*psi)', 271447138),
-
-    ('m/(s*Pa^n)', 'in/(s*psi^n)', 39.37) # Ratio converts m/s to in/s. The pressure conversion must be done separately
+    ('kg/m^3', 'g/cm^3', 0.001)
 ]
 
 def getAllConversions(unit):
