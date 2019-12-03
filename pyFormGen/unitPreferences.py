@@ -10,13 +10,16 @@ class UnitPreferences(PropertyCollection):
             self.setProperties(propDict)
 
     def convert(self, quantity, originUnit):
-        return convert(quantity, originUnit, self.getProperty(originUnit))
+        destUnit = self.getUnit(originUnit)
+        return convert(quantity, originUnit, destUnit)
 
     def convertAll(self, quantities, originUnit):
-        return convertAll(quantities, originUnit, self.getProperty(originUnit))
+        destUnit = self.getUnit(originUnit)
+        return convertAll(quantities, originUnit, destUnit)
 
     def convFormat(self, quantity, originUnit, places=3):
-        return convFormat(quantity, originUnit, self.getProperty(originUnit), places)
+        destUnit = self.getUnit(originUnit)
+        return convFormat(quantity, originUnit, destUnit, places)
 
     def getUnit(self, fromUnit):
         if fromUnit in self.props:
