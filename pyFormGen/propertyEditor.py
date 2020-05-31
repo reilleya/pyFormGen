@@ -65,7 +65,6 @@ class PropertyEditor(QWidget):
 
             self.editor.addItems(self.prop.values)
             self.editor.setCurrentText(self.prop.value)
-            self.editor.setMaximumWidth(300)
             self.editor.currentTextChanged.connect(self.valueChanged.emit)
 
             self.layout().addWidget(self.editor)
