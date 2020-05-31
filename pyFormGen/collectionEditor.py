@@ -30,6 +30,8 @@ class CollectionEditor(QWidget):
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.layout().addItem(self.verticalSpacer)
 
+        self.setMaximumWidth(500)
+
         self.buttons = buttons
         if self.buttons:
             self.addButtons()

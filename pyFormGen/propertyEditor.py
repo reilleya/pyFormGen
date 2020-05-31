@@ -1,8 +1,9 @@
 import math
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLineEdit
 from PyQt5.QtWidgets import QDoubleSpinBox, QSpinBox, QComboBox
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QDoubleValidator
 
 from . import properties
 from . import units
@@ -14,7 +15,7 @@ class PropertyEditor(QWidget):
     def __init__(self, parent, prop, preferences):
         super(PropertyEditor, self).__init__(QWidget(parent))
         self.preferences = preferences
-        self.setLayout(QVBoxLayout())
+        self.setLayout(QHBoxLayout())
         self.prop = prop
 
         if self.preferences is not None:
@@ -23,20 +24,25 @@ class PropertyEditor(QWidget):
             self.dispUnit = self.prop.unit
 
         if isinstance(prop, properties.FloatProperty):
-            self.editor = QDoubleSpinBox()
+            self.currentValue = self.prop.getValue()
+            self.editor = QLineEdit()
+            self.editor.setMaximumWidth(200)
+            self.editor.setAlignment(Qt.AlignRight)
+            self.editor.editingFinished.connect(self.textEntered)
+            self.editor.inputRejected.connect(self.invalidEntry)
 
-            self.editor.setSuffix(' ' + self.dispUnit)
+            self.unitSelector = QComboBox()
+            self.unitSelector.setMinimumWidth(150)
+            self.unitSelector.setMaximumWidth(150)
+            self.unitSelector.addItems(units.getAllConversions(self.prop.unit))
+            if len(units.getAllConversions(self.prop.unit)) == 1:
+                self.unitSelector.setEnabled(False)
+            self.unitSelector.setCurrentText(self.dispUnit)
+            self.updateUnits()
+            self.unitSelector.currentTextChanged.connect(self.updateUnits)
 
-            convMin = units.convert(self.prop.min, self.prop.unit, self.dispUnit)
-            convMax = units.convert(self.prop.max, self.prop.unit, self.dispUnit)
-            self.editor.setRange(convMin, convMax)
-
-            self.editor.setDecimals(6) # Large number of decimals for now while I pick a better method
-            self.editor.setSingleStep(10 ** (int(math.log(convMax, 10) - 4)))
-
-            self.editor.setValue(units.convert(self.prop.getValue(), prop.unit, self.dispUnit))
-            self.editor.valueChanged.connect(self.valueChanged.emit)
             self.layout().addWidget(self.editor)
+            self.layout().addWidget(self.unitSelector)
 
         elif isinstance(prop, properties.IntProperty):
             self.editor = QSpinBox()
@@ -59,13 +65,14 @@ class PropertyEditor(QWidget):
 
             self.editor.addItems(self.prop.values)
             self.editor.setCurrentText(self.prop.value)
+            self.editor.setMaximumWidth(300)
             self.editor.currentTextChanged.connect(self.valueChanged.emit)
 
             self.layout().addWidget(self.editor)
 
     def getValue(self):
         if isinstance(self.prop, properties.FloatProperty):
-            return units.convert(self.editor.value(), self.dispUnit, self.prop.unit)
+            return self.currentValue
 
         if isinstance(self.prop, properties.IntProperty):
             return units.convert(self.editor.value(), self.dispUnit, self.prop.unit)
@@ -77,3 +84,19 @@ class PropertyEditor(QWidget):
             return self.editor.currentText()
 
         return None
+
+    def updateUnits(self):
+        if isinstance(self.prop, properties.FloatProperty):
+            self.dispUnit = self.unitSelector.currentText()
+            self.unitSelector.setCurrentText(self.dispUnit)
+            convMin = units.convert(self.prop.min, self.prop.unit, self.dispUnit)
+            convMax = units.convert(self.prop.max, self.prop.unit, self.dispUnit)
+            self.editor.setValidator(QDoubleValidator(convMin, convMax, 6))
+            self.editor.setText('{:.8f}'.format(units.convert(self.currentValue, self.prop.unit, self.dispUnit)))
+
+    def textEntered(self):
+        self.currentValue = units.convert(float(self.editor.text()), self.dispUnit, self.prop.unit)
+        self.valueChanged.emit()
+
+    def invalidEntry(self):
+        self.editor.setText('{:.8f}'.format(units.convert(self.currentValue, self.prop.unit, self.dispUnit)))

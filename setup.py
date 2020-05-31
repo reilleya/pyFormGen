@@ -6,5 +6,5 @@ setup(
     license='GPLv3',
     packages=find_packages(),
     url='https://github.com/reilleya/pyFormGen',
-    description='A library that generates pyQt5 forms to enter '
+    description='A library that generates pyQt5 forms for entering data with units'
 )
