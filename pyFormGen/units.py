@@ -73,4 +73,7 @@ def convFormat(quantity, originUnit, destUnit, places=3):
     """Takes in a quantity in originUnit, converts it to destUnit and outputs a rounded and formatted string that
     includes the unit appended to the end."""
     num = round(convert(quantity, originUnit, destUnit), places)
-    return str(num) + ' ' + destUnit
+    # Remove -0
+    if abs(num) == 0:
+        num = 0.0
+    return '{} {}'.format(num, destUnit)
