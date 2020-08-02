@@ -71,6 +71,7 @@ class PropertyEditor(QWidget):
 
     def getValue(self):
         if isinstance(self.prop, properties.FloatProperty):
+            self.textEntered() # OSX needs this as focus doesn't leave line edits when they click a button
             return self.currentValue
 
         if isinstance(self.prop, properties.IntProperty):
@@ -90,7 +91,7 @@ class PropertyEditor(QWidget):
             self.unitSelector.setCurrentText(self.dispUnit)
             convMin = units.convert(self.prop.min, self.prop.unit, self.dispUnit)
             convMax = units.convert(self.prop.max, self.prop.unit, self.dispUnit)
-            self.editor.setValidator(QDoubleValidator(convMin, convMax, 6))
+            self.editor.setValidator(QDoubleValidator(convMin, convMax, 8))
             self.editor.setText('{:.8f}'.format(units.convert(self.currentValue, self.prop.unit, self.dispUnit)))
 
     def textEntered(self):
