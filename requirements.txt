@@ -1,0 +1,3 @@
+pyqt-distutils==0.7.3
+PyQt6==6.7.1
+PyQt6-sip==13.8.0

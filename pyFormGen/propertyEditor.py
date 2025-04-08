@@ -1,9 +1,9 @@
 import math
 
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QLineEdit
-from PyQt5.QtWidgets import QDoubleSpinBox, QSpinBox, QComboBox
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtGui import QDoubleValidator
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLineEdit
+from PyQt6.QtWidgets import QDoubleSpinBox, QSpinBox, QComboBox
+from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtGui import QDoubleValidator
 
 from . import properties
 from . import units
@@ -27,7 +27,7 @@ class PropertyEditor(QWidget):
             self.currentValue = self.prop.getValue()
             self.editor = QLineEdit()
             self.editor.setMaximumWidth(200)
-            self.editor.setAlignment(Qt.AlignRight)
+            self.editor.setAlignment(Qt.AlignmentFlag.AlignRight)
             self.editor.editingFinished.connect(self.textEntered)
             self.editor.inputRejected.connect(self.invalidEntry)
 
